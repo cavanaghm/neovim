@@ -1,7 +1,4 @@
-" MC's overly complex VIM / NeoVIM config file
-"
 " God help you if you're using this
-"
 
 " Shorthand global config switches
 let g:switch_wakatime=1 " Enable wakatime Plugin
@@ -180,8 +177,10 @@ set noerrorbells
 " Highlight as searching
 set incsearch
 " Set tab width
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=2
+" Convert tab to spaces
+set expandtab
 " }}}
 " File browser (netrw) Options {{{
 " Set default layout to long mode (name, size, date)
@@ -834,6 +833,9 @@ endfunction
 "let g:UltiSnipsJumpForwardTrigger="<tab>"
 "let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 "
+"" Load only MC's own snippets - single DIR search greatly reduces load time
+"let g:UltiSnipsSnippetDirectories=[$HOME."/.vim/mc-snippets"]
+" }}}
 " Plugin: WakaTime - WakaTime integration {{{
 if switch_wakatime == 1
 	Plug 'wakatime/vim-wakatime'
@@ -883,64 +885,64 @@ let g:go_info_mode='gopls'
 Plug 'Valloric/YouCompleteMe'
 " }}}
 " MBLC Plugin: treesitter {{{
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate', 'done': 'call s:ConfigTreeSitter()'}
-Plug 'lukas-reineke/indent-blankline.nvim'
-Plug 'nvim-treesitter/nvim-treesitter-textobjects'
-
-function s:ConfigTreeSitter()
-lua <<EOF
-require('nvim-treesitter.configs').setup {
-	highlight = {
-		enable = true, -- false will disable the whole extension
-		disable = {}, -- list of language that will be disabled e.g. { "c", "rust" }
-		additional_vim_regex_highlighting = false,
-	},
-	incremental_selection = {
-		enable = true,
-	},
-	indent = {
-		enable = false,
-	},
-	textobjects = {
-		move = {
-			enable = true,
-			set_jumps = true,
-			goto_next_start = {
-				["]f"] = "@function.outer",
-			},
-			goto_next_end = {
-				["]F"] = "@function.outer",
-			},
-			goto_previous_start = {
-				["[f"] = "@function.outer",
-			},
-			goto_previous_end = {
-				["[F"] = "@function.outer",
-			},
-		},
-	},
-}
-EOF
-endfunction
+"Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate', 'done': 'call s:ConfigTreeSitter()'}
+"Plug 'lukas-reineke/indent-blankline.nvim'
+"Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+"
+"function s:ConfigTreeSitter()
+"lua <<EOF
+"require('nvim-treesitter.configs').setup {
+"	highlight = {
+"		enable = true, -- false will disable the whole extension
+"		disable = {}, -- list of language that will be disabled e.g. { "c", "rust" }
+"		additional_vim_regex_highlighting = false,
+"	},
+"	incremental_selection = {
+"		enable = true,
+"	},
+"	indent = {
+"		enable = false,
+"	},
+"	textobjects = {
+"		move = {
+"			enable = true,
+"			set_jumps = true,
+"			goto_next_start = {
+"				["]f"] = "@function.outer",
+"			},
+"			goto_next_end = {
+"				["]F"] = "@function.outer",
+"			},
+"			goto_previous_start = {
+"				["[f"] = "@function.outer",
+"			},
+"			goto_previous_end = {
+"				["[F"] = "@function.outer",
+"			},
+"		},
+"	},
+"}
+"EOF
+"endfunction
 " }}}
 " MBLC Plugin: coc {{{
-"vmap <C-j> <Plug>(coc-snippets-select)
-"imap <C-l> <Plug>(coc-snippets-expand)
-""
-"Plug 'neoclide/coc.nvim', {'branch': 'release' }
-"let g:coc_global_extensions = [
-"		\ 'coc-snippets',
-"		\ 'coc-pairs',
-"		\ 'coc-prettier',
-"		\ 'coc-json',
-"		\ 'coc-eslint',
-"		\ 'coc-tsserver',
-"		\]
-"let g:coc_snippet_next = '<c-j>'
-"let g:coc_snippet_prev = '<c-k>'
+vmap <C-j> <Plug>(coc-snippets-select)
+imap <C-l> <Plug>(coc-snippets-expand)
 "
-"imap <C-l> <Plug>(coc-snippets-expand)
-"xmap <leader>x  <Plug>(coc-convert-snippet)
+Plug 'neoclide/coc.nvim', {'branch': 'release' }
+let g:coc_global_extensions = [
+		\ 'coc-snippets',
+		\ 'coc-pairs',
+		\ 'coc-prettier',
+		\ 'coc-json',
+		\ 'coc-eslint',
+		\ 'coc-tsserver',
+		\]
+let g:coc_snippet_next = '<c-j>'
+let g:coc_snippet_prev = '<c-k>'
+
+imap <C-l> <Plug>(coc-snippets-expand)
+xmap <leader>x  <Plug>(coc-convert-snippet)
 " }}}
 " MBLC Plugin: copilot {{{
 "Plug 'github/copilot.vim'
@@ -957,6 +959,29 @@ for spec in filter(values(g:plugs), 'has_key(v:val, ''done'')')
 endfor
 " }}}
 
+" Location specific overrides {{{
+if filereadable("/tmp/@location")
+	" We support mode changes
+	function! s:ModeCheck(id)
+		if (mode() =~# '\v(n|no)')
+			call system("/home/mc/Scripts/mood normal &")
+		elseif (mode() =~# '\v(v|V)')
+			call system("/home/mc/Scripts/mood visual &")
+		elseif (mode() ==# 'i')
+			call system("/home/mc/Scripts/mood insert &")
+		elseif (mode() =~# 'R')
+			call system("/home/mc/Scripts/mood replace &")
+		endif
+	endfunction
+	call timer_start(100, function('s:ModeCheck'), {'repeat': -1})
+
+	autocmd CmdlineEnter * call system("/home/mc/Scripts/mood command &")
+	autocmd CmdlineLeave * call system("/home/mc/Scripts/mood normal &")
+	autocmd VimLeave * call system("/home/mc/Scripts/mood normal")
+	autocmd FocusLost * call system("/home/mc/Scripts/mood normal &")
+
+endif
+" }}}
 " Color scheme {{{
 se bg=dark
 execute 'colors ' . switch_colorscheme
