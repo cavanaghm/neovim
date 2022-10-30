@@ -8,6 +8,7 @@ return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
 
   use 'morhetz/gruvbox'
+  use 'sainnhe/everforest'
   use 'tpope/vim-fugitive'
   use 'junegunn/fzf'
   use 'junegunn/fzf.vim'

@@ -885,64 +885,64 @@ let g:go_info_mode='gopls'
 Plug 'Valloric/YouCompleteMe'
 " }}}
 " MBLC Plugin: treesitter {{{
-"Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate', 'done': 'call s:ConfigTreeSitter()'}
-"Plug 'lukas-reineke/indent-blankline.nvim'
-"Plug 'nvim-treesitter/nvim-treesitter-textobjects'
-"
-"function s:ConfigTreeSitter()
-"lua <<EOF
-"require('nvim-treesitter.configs').setup {
-"	highlight = {
-"		enable = true, -- false will disable the whole extension
-"		disable = {}, -- list of language that will be disabled e.g. { "c", "rust" }
-"		additional_vim_regex_highlighting = false,
-"	},
-"	incremental_selection = {
-"		enable = true,
-"	},
-"	indent = {
-"		enable = false,
-"	},
-"	textobjects = {
-"		move = {
-"			enable = true,
-"			set_jumps = true,
-"			goto_next_start = {
-"				["]f"] = "@function.outer",
-"			},
-"			goto_next_end = {
-"				["]F"] = "@function.outer",
-"			},
-"			goto_previous_start = {
-"				["[f"] = "@function.outer",
-"			},
-"			goto_previous_end = {
-"				["[F"] = "@function.outer",
-"			},
-"		},
-"	},
-"}
-"EOF
-"endfunction
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate', 'done': 'call s:ConfigTreeSitter()'}
+Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+
+function s:ConfigTreeSitter()
+lua <<EOF
+require('nvim-treesitter.configs').setup {
+	highlight = {
+		enable = true, -- false will disable the whole extension
+		disable = {}, -- list of language that will be disabled e.g. { "c", "rust" }
+		additional_vim_regex_highlighting = false,
+	},
+	incremental_selection = {
+		enable = true,
+	},
+	indent = {
+		enable = false,
+	},
+	textobjects = {
+		move = {
+			enable = true,
+			set_jumps = true,
+			goto_next_start = {
+				["]f"] = "@function.outer",
+			},
+			goto_next_end = {
+				["]F"] = "@function.outer",
+			},
+			goto_previous_start = {
+				["[f"] = "@function.outer",
+			},
+			goto_previous_end = {
+				["[F"] = "@function.outer",
+			},
+		},
+	},
+}
+EOF
+endfunction
 " }}}
 " MBLC Plugin: coc {{{
-vmap <C-j> <Plug>(coc-snippets-select)
-imap <C-l> <Plug>(coc-snippets-expand)
+"vmap <C-j> <Plug>(coc-snippets-select)
+"imap <C-l> <Plug>(coc-snippets-expand)
+""
+"Plug 'neoclide/coc.nvim', {'branch': 'release' }
+"let g:coc_global_extensions = [
+"		\ 'coc-snippets',
+"		\ 'coc-pairs',
+"		\ 'coc-prettier',
+"		\ 'coc-json',
+"		\ 'coc-eslint',
+"		\ 'coc-tsserver',
+"		\]
+"let g:coc_snippet_next = '<c-j>'
+"let g:coc_snippet_prev = '<c-k>'
 "
-Plug 'neoclide/coc.nvim', {'branch': 'release' }
-let g:coc_global_extensions = [
-		\ 'coc-snippets',
-		\ 'coc-pairs',
-		\ 'coc-prettier',
-		\ 'coc-json',
-		\ 'coc-eslint',
-		\ 'coc-tsserver',
-		\]
-let g:coc_snippet_next = '<c-j>'
-let g:coc_snippet_prev = '<c-k>'
-
-imap <C-l> <Plug>(coc-snippets-expand)
-xmap <leader>x  <Plug>(coc-convert-snippet)
+"imap <C-l> <Plug>(coc-snippets-expand)
+"xmap <leader>x  <Plug>(coc-convert-snippet)
 " }}}
 " MBLC Plugin: copilot {{{
 "Plug 'github/copilot.vim'
